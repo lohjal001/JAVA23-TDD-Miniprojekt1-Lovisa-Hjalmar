@@ -3,6 +3,9 @@ package com.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 class PrimeNumberTest {
 
@@ -56,6 +59,15 @@ class PrimeNumberTest {
         assertFalse(result > 0, "last should be a positive number");
     }
 
+    @Test
+    @DisplayName("test if both are negative")
+    public void negativeRangeTest() {
+        PrimeNumber counter = new PrimeNumber();
+        int result = counter.countPrimeNumbers(-100, -1);
+
+        assertEquals(0, result, "negative numbers are not primes");
+    }
+
 
     @Test
     @DisplayName("test if numbers are null")
@@ -71,6 +83,61 @@ class PrimeNumberTest {
         PrimeNumber counter = new PrimeNumber();
         int result = counter.countPrimeNumbers(1000, 100);
         assertFalse(result > 0, "first number should be smaller than last number");
+    }
+
+    @Test
+    @DisplayName("if range is the same")
+    public void singleNumberInRange() {
+        PrimeNumber counter = new PrimeNumber();
+        int primeCount = counter.countPrimeNumbers(7, 7);
+        int primeSum = counter.sumOfPrimeNumbers(7, 7);
+
+        assertEquals(1, primeCount, "7 is a prime so count should be 1");
+        assertEquals(7, primeSum, "7 is a prime so sum should be 7");
+    }
+
+
+    @Test
+    @DisplayName("test if logPrimeNumbers message works")
+    void testLogPrimeNumbers() {
+        // Redirect System.out to capture output
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        try {
+            PrimeNumber counter = new PrimeNumber();
+            counter.logPrimeNumbers(168);
+
+            String output = outputStream.toString().trim();
+
+            assertTrue(output.contains("Hej, det finns 168 primtal mellan 0 och 1000!"),
+                    "Output should contain the correct message for prime count");
+
+        } finally {
+            System.setOut(originalOut);
+        }
+    }
+
+    @Test
+    @DisplayName("test if logSumPrimeNumbers message works")
+    void testLogSumPrimeNumbers() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        try {
+            PrimeNumber counter = new PrimeNumber();
+            counter.logSumPrimeNumbers(76127);
+
+            String output = outputStream.toString().trim();
+
+            assertTrue(output.contains("Och den totala summan av dessa primtal är 76127."),
+                    "Output should contain the correct message for sum");
+
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 
 }
